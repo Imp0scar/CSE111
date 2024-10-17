@@ -1,7 +1,11 @@
 .headers on
-SELECT COUNT(DISTINCT s.supplier_id) AS suppliers_cnt
-FROM Suppliers s
-JOIN Supplies p ON s.supplier_id = p.supplier_id
-WHERE s.country = 'Peru'
-GROUP BY s.supplier_id
-HAVING COUNT(DISTINCT p.part_id) > 40;
+SELECT COUNT(*) AS supplier_cnt
+FROM (
+    SELECT s.s_suppkey
+    FROM supplier s
+    JOIN nation n ON s.s_nationkey = n.n_nationkey
+    JOIN partsupp ps ON s.s_suppkey = ps.ps_suppkey
+    WHERE n.n_name = 'PERU'
+    GROUP BY s.s_suppkey
+    HAVING COUNT(DISTINCT ps.ps_partkey) > 40
+) AS subquery;
